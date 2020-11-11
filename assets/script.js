@@ -10,7 +10,6 @@ function buildQueryURL() {
   + "&country=US"
   + "&active.gte=2020-11-16&active.lte=2020-11-30&active.tz=America/Los_Angeles&sort=rank"
 
-    console.log(queryLink + eventSearch);
     console.log(queryLink);
 
   return queryLink
@@ -18,6 +17,20 @@ function buildQueryURL() {
 // API data turns into elements on the page
 function renderResults(eventData) {
   console.log(eventData);
+
+// Check which radio is checked to return its value
+  var numEvents = $('input[name="search-count"]:checked').val();
+
+// Loop and render elements according to selection 
+  for (var i = 0; i < numEvents; i++) {
+    
+    console.log(eventData.results[i]);
+// Get exact number of events according to event count
+    var eventList = eventData.results[i];
+    
+// Track every event count
+    var eventCount = i + 1;
+  }
 }
 
 function clear() {
