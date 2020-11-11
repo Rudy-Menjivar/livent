@@ -9,76 +9,74 @@
        }
     </style>
   </head>
+  
   <body>
-    <!--The div elements for the map and route details -->
+    <!--Div elements for the map and route details -->
     <div id="map"></div>
     <div id="msg"></div>
-    <script 
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvNBKMdxsvuvkSePNK-29rINgqdJn739w">
-    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvNBKMdxsvuvkSePNK-29rINgqdJn739w"></script>
     <script>
 
-    // Initialize and add the map
-    var map;
-    initMap();
+      // Initialize and add the map
+      var map;
+      initMap();
 
-    function initMap() {
+      function initMap() {
 
-    // The map, centered on Sacramento
-    const center = {lat: 38.5816, lng: -121.4944};
-    const options = {zoom: 12, scaleControl: true, center: center};
-    map = new google.maps.Map(
-        document.getElementById('map'), options);
-    }
-    // Variables for dynamic user lat, user lng, event lat, event lng
-    // User lat/long is obtained through location data. Event lat/long is obtained through event location data in PredictHQ api
-    var userLat 
-    var userLng 
-    var eventLat 
-    var eventLng 
+      // The map - centered on Sacramento
+      const center = {lat: 38.5816, lng: -121.4944};
+      const options = {zoom: 12, scaleControl: true, center: center};
+      map = new google.maps.Map(
+          document.getElementById('map'), options);
+      }
+      // Variables for dynamic user latitude, user longitude, event latitude, event longitude
+      // User lat/long is obtained through location data. Event lat/long is obtained through event location data in PredictHQ API
+      var userLat 
+      var userLng 
+      var eventLat 
+      var eventLng 
 
-    // Locations of user and event (substitute with variables userLat, userLng, eventLat, eventLng)
-    const userLoc = {lat: 38.550530, lng: -121.464210};
-    const eventLoc = {lat: 38.585820, lng: -121.489990};
-    
+      // Locations of user and event (substitute with variables userLat, userLng, eventLat, eventLng)
+      const userLoc = {lat: 38.550530, lng: -121.464210};
+      const eventLoc = {lat: 38.585820, lng: -121.489990};
+      
 
-    // The markers for users location and event location
-    // call all this in a a function - pass in a new user lat long and event lat long
-    // find method to recenter
+      // The markers for user's location and event location
+      // Call all this in a function - pass it in a new user lat/long and event lat/long
+      // Find method to recenter
 
-    // upon button click event initiate the below in a function
-    var mk1 = new google.maps.Marker({position: userLoc, map: map});
-    var mk2 = new google.maps.Marker({position: eventLoc, map: map});
-    let directionsService = new google.maps.DirectionsService();
-    let directionsRenderer = new google.maps.DirectionsRenderer();
-    directionsRenderer.setMap(map); 
+      // Upon button click event initiate the below in a function
+      var mk1 = new google.maps.Marker({position: userLoc, map: map});
+      var mk2 = new google.maps.Marker({position: eventLoc, map: map});
+      let directionsService = new google.maps.DirectionsService();
+      let directionsRenderer = new google.maps.DirectionsRenderer();
+      directionsRenderer.setMap(map); 
 
-    // Existing map object displays directions
-    // Create route from existing points used for markers
-    const route = {
-      origin: userLoc,
-      destination: eventLoc,
-      travelMode: 'DRIVING'
-    }
+      // Existing map object displays directions
+      // Create route from existing points used for markers
+      const route = {
+        origin: userLoc,
+        destination: eventLoc,
+        travelMode: 'DRIVING'
+      }
 
-    directionsService.route(route,
-        function(response, status) {
-        if (status !== 'OK') {
-            window.alert('Directions request failed due to ' + status);
-            return;
-        } else {
-            directionsRenderer.setDirections(response); // Add route to the map
-            var directionsData = response.routes[0].legs[0]; // Get data about the mapped route
-            if (!directionsData) {
-            window.alert('Directions request failed');
-            return;
-            }
-            else {
-            document.getElementById('msg').innerHTML += " Driving distance is " + directionsData.distance.text + " (" + directionsData.duration.text + ").";
-            }
-        }
-    });
-    
+      directionsService.route(route,
+          function(response, status) {
+          if (status !== 'OK') {
+              window.alert('Directions request failed due to ' + status);
+              return;
+          } else {
+              directionsRenderer.setDirections(response); // Add route to the map
+              var directionsData = response.routes[0].legs[0]; // Get data about the mapped route
+              if (!directionsData) {
+              window.alert('Directions request failed');
+              return;
+              }
+              else {
+              document.getElementById('msg').innerHTML += " Driving distance is " + directionsData.distance.text + " (" + directionsData.duration.text + ").";
+              }
+          }
+      });
     </script>
     
   </body>
