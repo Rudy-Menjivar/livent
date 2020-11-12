@@ -6,11 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="assets/stylesheet.css">
-    <title>livent</title>
+    <title>Livent</title>
 </head>
 <body>
 
-<header><h1>livent</h1></header>
+<header><h1>Livent</h1></header>
 
 <div>
 <h2>Search nearby events!</h2>
@@ -58,9 +58,40 @@
   Render save button on each row of results
   When user clicks Save button then save entire row of event details to local storage
   Display row of event details from local storage onto page in a div
-  Map modal (not mvp)
- -->
+  Map modal (not mvp) 
+-->
 
+<br>
+<br>
+<br>
+
+<!--This function creates a button that allows the browser to determine your exact position in latitude and longitude coordinates. Takes a few seconds to load. -->
+<button onclick="getLocation()">What's Your Location?</button>
+
+<p id ="demo"></p>
+<script>
+  var x = document.getElementById("demo");
+  function getLocation() {
+    // Makes sure the browser supports this feature
+    if (navigator.geolocation) {
+      // Provide our showPosition() function to getCurrentPosition
+      navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+      x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+  }
+  function showPosition(position) {
+    // Grab coordinates from the given object
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+    // Stores your coordinates in the console
+    console.log("Your coordinates are Latitude: " + lat + " Longitude " + lon);
+
+    x.innerHTML = "Latitude: " + position.coords.latitude + "<br> Longitude: " + position.coords.longitude;
+  }
+</script>
+
+ 
 <script src="assets/script.js"></script>
 </body>
 </html>
