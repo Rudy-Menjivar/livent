@@ -69,11 +69,11 @@ function renderResults(eventData) {
     console.log(eventLoc[1]);
     // Render latitudes
     $eventListItem.append(
-      `<br><span class'label'>Latitude: </span><strong>${eventLoc[0]}</strong>`
+      `<br><span class'label'>Longitude: </span><strong>${eventLoc[0]}</strong>`
     );
     // Render longitudes
     $eventListItem.append(
-      `<br><span class'label'>Longitude: </span><strong>${eventLoc[1]}</strong>`
+      `<br><span class'label'>Latitude: </span><strong>${eventLoc[1]}</strong>`
     );
     
     // var eventDescription = eventList.description;
