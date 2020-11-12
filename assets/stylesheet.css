@@ -1,3 +1,10 @@
+/* Bulma CSS Styling link (this will go on the main HTML files but I am putting it here for now so I can keep track of what I'm looking at
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">*/
+
+/* Font Awesome so we can use icons if needed
+<script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>*/
+
+
 table {
     border-collapse: collapse;
     border-spacing: 0;
