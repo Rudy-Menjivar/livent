@@ -92,8 +92,6 @@ $("#search-button").on("click", function(event) {
 
   event.preventDefault();
 
-  clear();
-
   var queryURL = buildQueryURL();
 
 $.ajax({
