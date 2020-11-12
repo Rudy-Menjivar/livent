@@ -30,11 +30,62 @@ function renderResults(eventData) {
     
 // Track every event count
     var eventCount = i + 1;
+    console.log(eventCount);
+
+// List group containing events 
+    var $eventList = $("<ul>");
+    $eventList.addClass("list-group");
+
+// Add element to DOM
+    $("#event-results").append($eventList);
+    
+    var eventTitle = eventList.title;
+    console.log(eventTitle);
+    
+    var eventCat = eventList.category;
+    console.log(eventCat);
+
+    var $eventListItem = $("<li class='list-group-item titleHeadline'>");
+    
+    // If title & categories are present, then append to $eventList
+    if (eventTitle && eventCat) {
+      $eventListItem.append(
+        `<span class='label label-primary'>${eventCount}. </span><strong>${eventTitle}</strong>`
+      );
+    }
+    
+    var eventDate = eventList.start;
+    // Render Date
+    $eventListItem.append(
+      `<br><span class'label'>Date: </span><strong>${eventDate}</strong>`
+    );
+    // Render categories
+    $eventListItem.append(
+      `<br><span class'label'>Category: </span><strong>${eventCat}</strong>`
+    );
+
+    var eventLoc = eventList.location;
+    console.log(eventLoc[0]);
+    console.log(eventLoc[1]);
+    // Render latitudes
+    $eventListItem.append(
+      `<br><span class'label'>Latitude: </span><strong>${eventLoc[0]}</strong>`
+    );
+    // Render longitudes
+    $eventListItem.append(
+      `<br><span class'label'>Longitude: </span><strong>${eventLoc[1]}</strong>`
+    );
+    
+    // var eventDescription = eventList.description;
+    // console.log(eventDescription);
+
+    $eventList.append($eventListItem);
   }
 }
-
+// Clear any rendered event results
 function clear() {
-  $("#event-section").empty();
+  $("#event-results").empty();
+  $("#search-input").val('');
 }
 
 $("#search-button").on("click", function(event) {
