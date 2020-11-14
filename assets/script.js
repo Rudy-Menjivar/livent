@@ -1,4 +1,3 @@
-
 // Pulls search input from the form to build queryURL for eventData API
 function buildQueryURL() {
   // Gets value from search input
@@ -102,3 +101,4 @@ $.ajax({
 });
 
 $("#clear-all").on("click", clear);
+
