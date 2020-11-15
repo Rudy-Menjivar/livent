@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+       /* Styling div element containing the map */
+      #map {
+        height: 400px;
+        width: 600px;
+       }
+    </style>
+  </head>
+  <body>
+    <!--The div elements for the map and route details -->
+    <div id="map"></div>
+    <div id="msg"></div>
+    <div>
+      <button id="user-location">Set Current Location</button>
+      <form id="address">
+        <input type="address" name="address" />
+        <input type="submit" value="Set Event Location" />
+      </form>
+      <button id="directions">Get Directions</button>
+    </div>
+    <script 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvNBKMdxsvuvkSePNK-29rINgqdJn739w">
+    </script>
+  
+    <script>
+
+    // Initialize and add the map
+    const INITIAL_LATLNG = { lat: 38.5816, lng: -121.4944 };
+    const INITIAL_OPTIONS = { zoom: 12, scaleControl: true, center: INITIAL_LATLNG };
+
+    const map = new google.maps.Map(document.getElementById('map'), INITIAL_OPTIONS);
+    const geocoder = new google.maps.Geocoder();
+    const directionsService = new google.maps.DirectionsService();
+    const directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsRenderer.setMap(map);
+
+    let currentLocation;
+    let eventLocation;
+
+    function handleGetLocationClick() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          const latlng = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          currentLocation = latlng;
+          map.setCenter(latlng);
+          new google.maps.Marker({ position: latlng, map: map })
+        })
+      }
+    }
+
+    function handleAddressSubmit(e) {
+      e.preventDefault();
+      const address = e.target.address.value;
+      geocoder.geocode({ address: address }, (results, status) => {
+        if (status === "OK") {
+          const latlng = results[0].geometry.location;
+          eventLocation = latlng;
+          map.setCenter(latlng);
+          new google.maps.Marker({
+            map: map,
+            position: latlng,
+          });
+        } else {
+          console.log(
+            "Geocode was not successful for the following reason: " + status
+          );
+        }
+      });
+    }
+
+    function handleGetDirectionsClick() {
+      const route = {
+        origin: currentLocation,
+        destination: eventLocation,
+        travelMode: 'DRIVING'
+      }
+
+      directionsService.route(route, (response, status) => {
+        if (status !== 'OK') {
+            window.alert('Directions request failed due to ' + status);
+            return;
+        } else {
+          directionsRenderer.setDirections(response); // Add route to the map
+          var directionsData = response.routes[0].legs[0]; // Get data about the mapped route
+          if (!directionsData) {
+            window.alert('Directions request failed');
+          } else {
+            document.getElementById('msg').innerHTML += " Driving distance is " + directionsData.distance.text + " (" + directionsData.duration.text + ").";
+          }
+        }
+      });
+    }
+
+    // This all happens when the page loads
+    (function() {
+      document.getElementById('user-location').addEventListener('click', handleGetLocationClick);
+      document.getElementById('address').addEventListener('submit', handleAddressSubmit);
+      document.getElementById('directions').addEventListener('click', handleGetDirectionsClick)
+    }());
+    
+    </script>
+    
+  </body>
+</html>
