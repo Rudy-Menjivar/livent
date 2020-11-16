@@ -31,8 +31,7 @@
     <div class="row">
       <div class="col-sm-12">
         <!-- Return the selected number of events with radio selection -->
-        <legend>Number of events:</legend>
-
+        <legend>
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" name="search-count" value="3">
           <label for="3" class="form-check-label">
@@ -53,6 +52,8 @@
             10
           </label>
         </div>
+        (Events to display)
+        </legend>
         <br>
       </div>
     </div>
@@ -60,7 +61,7 @@
     <br>
     <div class="row">
       <div class="col-sm-12">
-        <div class="card">
+        <div class="card" style="visibility: hidden">
           <div class="card-header">
             <strong>Top Events</strong>
           </div>
@@ -73,7 +74,7 @@
 
     <br>
     <!--This function creates a button that allows the browser to determine your exact position in latitude and longitude coordinates. Takes a few seconds to load. -->
-    <button onclick="getLocation()">Find Me!</button>
+    <button onclick="getLocation()" style="visibility: hidden">Find Me!</button>
     <p id ="location"></p>
     <script>
     var x = document.getElementById("location");

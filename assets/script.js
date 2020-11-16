@@ -5,9 +5,17 @@ function buildQueryURL() {
   .val()
   .trim();
   // PredictHQ event search
-  var queryLink = "https://api.predicthq.com/v1/events/?q=" + eventSearch
+  var queryLink = "https://api.predicthq.com/v1/events/"
+  // + "location_around.origin=40.782409,-73.971885&location_around.offset=1km"
+  // + "?relevance=q,within"
+  + "?q=" + eventSearch
+  // + "?within=100mi@38.7945892,-121.32270899999999"
+  // + "?location_around.origin=38.7945892,-121.32270899999999"
+  // + "?location_around.offset=10km"
   + "&country=US"
-  + "&active.gte=2020-11-16&active.lte=2020-11-30&active.tz=America/Los_Angeles&sort=rank"
+  + "&active.gte=2020-11-17&active.lte=2020-11-30"
+  + "&active.tz=America/Los_Angeles&sort=rank"
+
     console.log(queryLink);
   // Clear any previous event-results 
 $("#event-results").empty();
@@ -60,10 +68,9 @@ function renderResults(eventData) {
     $eventListItem.append(
       `<br><span class'label'>Latitude: </span><strong>${eventLoc[1]}</strong>`
     );
-    // var eventDescription = eventList.description;
-    // console.log(eventDescription);
-
+    // Render search data & make card appear
     $eventList.append($eventListItem);
+    $(".card").css("visibility", "visible");
   }
 }
 // Clear any rendered event results
