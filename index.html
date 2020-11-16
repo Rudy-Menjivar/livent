@@ -55,6 +55,8 @@
         (Events to display)
         </legend>
         <br>
+        <p id="errorMessage"></p>
+        <p id ="location"></p>
       </div>
     </div>
     
@@ -71,39 +73,13 @@
         </div>
       </div>
     </div>
-
-    <br>
-    <!--This function creates a button that allows the browser to determine your exact position in latitude and longitude coordinates. Takes a few seconds to load. -->
-    <button onclick="getLocation()" style="visibility: hidden">Find Me!</button>
-    <p id ="location"></p>
-    <script>
-    var x = document.getElementById("location");
-    function getLocation() {
-        // Makes sure the browser supports this feature
-        if (navigator.geolocation) {
-        // Provide our showPosition() function to getCurrentPosition
-        navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-        x.innerHTML = "Geolocation is not supported by this browser.";
-        }
-    }
-    function showPosition(position) {
-        // Grab coordinates from the given object
-        var lat = position.coords.latitude;
-        var lon = position.coords.longitude;
-        // Stores your coordinates in the console
-        console.log("Your coordinates are Latitude: " + lat + " Longitude " + lon);
-        x.innerHTML = "Latitude: " + position.coords.latitude + "<br> Longitude: " + position.coords.longitude;
-    }
-    </script>
   </div>
 </section>
 
 <!-- 
-  Implement geo location checkbox
+  Implemented geo location on page load
   User is prompted to input event name in search box and click search button
   Upon button click, publish table of search results
-  Limit table to 5 rows
   Search events will rend with rows of details such as 'event name', 'event type', 'date', 'location' and 'distance'
   Render save button on each row of results
   When user clicks Save button then save entire row of event details to local storage
