@@ -1,9 +1,29 @@
+var x = document.getElementById("location");
+// This function loads with the browser to determine your exact position in latitude and longitude coordinates
+window.onload = function getLocation() {
+    // Makes sure the browser supports this feature
+    if (navigator.geolocation) {
+    // Provide our showPosition() function to getCurrentPosition
+    navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+    x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+function showPosition(position) {
+    // Grab coordinates from the given object
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+    // Stores your coordinates in the console
+    console.log("Your coordinates are Latitude: " + lat + " Longitude " + lon);
+    x.innerHTML = "Latitude: " + position.coords.latitude + "<br> Longitude: " + position.coords.longitude;
+    var userLocation = lat + ", " + lon;
+    console.log (userLocation);
+};
+
 // Pulls search input from the form to build queryURL for eventData API
 function buildQueryURL() {
   // Gets value from search input
-  var eventSearch = $("#search-input")
-  .val()
-  .trim();
+  var eventSearch = $("#search-input").val().trim();
   // PredictHQ event search
   var queryLink = "https://api.predicthq.com/v1/events/"
   // + "location_around.origin=40.782409,-73.971885&location_around.offset=1km"
