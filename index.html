@@ -31,7 +31,8 @@
     <div class="row">
       <div class="col-sm-12">
         <!-- Return the selected number of events with radio selection -->
-        <legend>
+        <legend>Number of events:</legend>
+
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" name="search-count" value="3">
           <label for="3" class="form-check-label">
@@ -52,18 +53,15 @@
             10
           </label>
         </div>
-        (Events to display)
-        </legend>
         <br>
-        <p id="errorMessage"></p>
-        <p id ="location"></p>
       </div>
     </div>
-    
+    <div id="map"></div>
+    <div id="msg"></div>
     <br>
     <div class="row">
       <div class="col-sm-12">
-        <div class="card" style="visibility: hidden">
+        <div class="card">
           <div class="card-header">
             <strong>Top Events</strong>
           </div>
@@ -73,19 +71,220 @@
         </div>
       </div>
     </div>
+
+    <br>
+    <!--This function creates a button that allows the browser to determine your exact position in latitude and longitude coordinates. Takes a few seconds to load. -->
+    <button onclick="getLocation()">Find Me!</button>
+    <p id ="location"></p>
+    <script 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvNBKMdxsvuvkSePNK-29rINgqdJn739w">
+    </script>
+  
+    <script>
+      // Pulls search input from the form to build queryURL for eventData API
+function buildQueryURL() {
+  // Gets value from search input
+  var eventSearch = $("#search-input")
+  .val()
+  .trim();
+  // PredictHQ event search
+  var queryLink = "https://api.predicthq.com/v1/events/?q=" + eventSearch
+  + "&country=US"
+  + "&active.gte=2020-11-16&active.lte=2020-11-30&active.tz=America/Los_Angeles&sort=rank"
+
+    console.log(queryLink);
+
+  return queryLink
+}
+var eventLoc;
+// API data turns into elements on the page
+function renderResults(eventData) {
+  console.log(eventData);
+
+// Check which radio is checked to return its value
+  var numEvents = $('input[name="search-count"]:checked').val();
+
+// Loop and render elements according to selection 
+  for (var i = 0; i < numEvents; i++) {
+    
+    console.log(eventData.results[i]);
+// Get exact number of events according to event count
+    var eventList = eventData.results[i];
+    
+// Track every event count
+    var eventCount = i + 1;
+    console.log(eventCount);
+
+// List group containing events 
+    var $eventList = $("<ul>");
+    $eventList.addClass("list-group");
+
+// Add element to DOM
+    $("#event-results").append($eventList);
+    
+    var eventTitle = eventList.title;
+    console.log(eventTitle);
+    
+    var eventCat = eventList.category;
+    console.log(eventCat);
+
+    var $eventListItem = $("<li class='list-group-item titleHeadline'>");
+    
+    // If title & categories are present, then append to $eventList
+    if (eventTitle && eventCat) {
+      $eventListItem.append(
+        `<span class='label label-primary'>${eventCount}. </span><strong>${eventTitle}</strong>`
+      );
+    }
+    
+    var eventDate = eventList.start;
+    // Render Date
+    $eventListItem.append(
+      `<br><span class'label'>Date: </span><strong>${eventDate}</strong>`
+    );
+    // Render categories
+    $eventListItem.append(
+      `<br><span class'label'>Category: </span><strong>${eventCat}</strong>`
+    );
+
+    eventLoc = eventList.location;
+    console.log(eventLoc[0]);
+    console.log(eventLoc[1]);
+    // Render latitudes
+    $eventListItem.append(
+      `<br><span class'label'>Longitude: </span><strong>${eventLoc[0]}</strong>`
+    );
+    // Render longitudes
+    $eventListItem.append(
+      `<br><span class'label'>Latitude: </span><strong>${eventLoc[1]}</strong>`
+    );
+     
+    // button Get Directions
+    $eventListItem.append(
+      `<br><p><button class="directions"> Get Directions </button></p>`
+    );
+    // var eventDescription = eventList.description;
+    // console.log(eventDescription);
+
+    $eventList.append($eventListItem);
+  }
+}
+// Clear any rendered event results
+function clear() {
+  $("#event-results").empty();
+  $("#search-input").val('');
+}
+
+$("#search-button").on("click", function(event) {
+
+  event.preventDefault();
+
+  var queryURL = buildQueryURL();
+
+$.ajax({
+  url: queryURL,
+  method: "GET",
+  headers: {"Authorization": "Bearer Q0wsOeBlriMife0WbvdpKFrEwbDRTxISnqZTeQzu"}
+}).then(renderResults);
+});
+
+$("#clear-all").on("click", clear);
+    // Initialize and add the map
+    const INITIAL_LATLNG = { lat: 38.5816, lng: -121.4944 };
+    const INITIAL_OPTIONS = { zoom: 12, scaleControl: true, center: INITIAL_LATLNG };
+
+    const map = new google.maps.Map(document.getElementById('map'), INITIAL_OPTIONS);
+    const geocoder = new google.maps.Geocoder();
+    const directionsService = new google.maps.DirectionsService();
+    const directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsRenderer.setMap(map);
+
+    // 'callback' here is the function we pass to getUserLocation when we call it below:
+    // getUserLocation(() => {})
+    function getUserLocation(callback) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          // here we call the callback function with the latlng. What we pass to callback here becomes
+          // userLatlng below
+          callback({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        })
+      } else {
+        throw new Error("Couldn't get user location");
+      }
+    }
+    
+    function getEventLocation(eventLoc,callback) {
+      if (eventLoc) {
+        
+          callback({
+            lat: eventLoc[1],
+            lng: eventLoc[0],
+          });
+        
+      } else {
+        throw new Error("Couldn't get event location");
+      }
+    }
+
+
+    function handleGetDirectionsClick(e) {
+      // This is making sure that the clicked element is a directions button.
+      if (e.target.className != 'directions') return;
+
+      // Get the user location
+      getUserLocation((userLatlng) => {
+        // Get the event location
+        getEventLocation(eventLoc, (eventLatlng) => {
+          
+          // Now that we have both latlngs in scope, do the routing
+          const route = {
+            origin: userLatlng,
+            destination: eventLatlng,
+            travelMode: 'DRIVING'
+          }
+
+          directionsService.route(route, (response, status) => {
+            if (status !== 'OK') {
+              window.alert('Directions request failed due to ' + status);
+              return;
+            } else {
+              directionsRenderer.setDirections(response); // Add route to the map
+              var directionsData = response.routes[0].legs[0]; // Get data about the mapped route
+              if (!directionsData) {
+                window.alert('Directions request failed');
+              } else {
+                document.getElementById('msg').innerHTML += " Driving distance is " + directionsData.distance.text + " (" + directionsData.duration.text + ").";
+              }
+            }
+          });
+          
+        });
+      })
+    }
+
+    // This happens when the page loads
+    (function() {
+      // Adding an event handler for any click in the #events div
+      document.getElementById('event-results').addEventListener('click', handleGetDirectionsClick);
+    }());
+    
+    </script>
   </div>
 </section>
 
 <!-- 
-  Implemented geo location on page load
+  Implement geo location checkbox
   User is prompted to input event name in search box and click search button
   Upon button click, publish table of search results
+  Limit table to 5 rows
   Search events will rend with rows of details such as 'event name', 'event type', 'date', 'location' and 'distance'
   Render save button on each row of results
   When user clicks Save button then save entire row of event details to local storage
   Display row of event details from local storage onto page in a div
   Map modal (not mvp)
  -->
-<script src="assets/script.js"></script>
 </body>
 </html>
