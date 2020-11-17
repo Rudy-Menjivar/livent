@@ -117,31 +117,6 @@
         </div>
       </div>
     </div>
-
-    <br>
-    <!--This function creates a button that allows the browser to determine your exact position in latitude and longitude coordinates. Takes a few seconds to load. -->
-    <button onclick="getLocation()">Find Me!</button>
-    <p id ="location"></p>
-    <script>
-    var x = document.getElementById("location");
-    function getLocation() {
-        // Makes sure the browser supports this feature
-        if (navigator.geolocation) {
-        // Provide our showPosition() function to getCurrentPosition
-        navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-        x.innerHTML = "Geolocation is not supported by this browser.";
-        }
-    }
-    function showPosition(position) {
-        // Grab coordinates from the given object
-        var lat = position.coords.latitude;
-        var lon = position.coords.longitude;
-        // Stores your coordinates in the console
-        console.log("Your coordinates are Latitude: " + lat + " Longitude " + lon);
-        x.innerHTML = "Latitude: " + position.coords.latitude + "<br> Longitude: " + position.coords.longitude;
-    }
-    </script>
   </div>
 </div>
 
