@@ -9,6 +9,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
     <link rel="stylesheet" type="text/css" href="assets/stylesheet.css">
+    <style>
+      /* Styling div element containing the map */
+       #map {
+       height: 300px;
+       width: 1450px;
+       }
+   </style>
     <title>Livent</title>
 </head>
 
@@ -51,6 +58,10 @@
       </div>
     </div>
   </section>
+
+  <div id="map"></div>
+  <div id="msg"></div>
+  <br>
 
 <div class="section">
   <div class="container">
@@ -119,28 +130,205 @@
     </div>
 
     <br>
+    <br>
     <!--This function creates a button that allows the browser to determine your exact position in latitude and longitude coordinates. Takes a few seconds to load. -->
     <button onclick="getLocation()">Find Me!</button>
     <p id ="location"></p>
+    <script 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvNBKMdxsvuvkSePNK-29rINgqdJn739w">
+    </script>
+  
     <script>
-    var x = document.getElementById("location");
-    function getLocation() {
-        // Makes sure the browser supports this feature
-        if (navigator.geolocation) {
-        // Provide our showPosition() function to getCurrentPosition
-        navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-        x.innerHTML = "Geolocation is not supported by this browser.";
-        }
+      // Pulls search input from the form to build queryURL for eventData API
+function buildQueryURL() {
+  // Gets value from search input
+  var eventSearch = $("#search-input")
+  .val()
+  .trim();
+  // PredictHQ event search
+  var queryLink = "https://api.predicthq.com/v1/events/?q=" + eventSearch
+  + "&country=US"
+  + "&active.gte=2020-11-16&active.lte=2020-11-30&active.tz=America/Los_Angeles&sort=rank"
+
+    console.log(queryLink);
+
+  return queryLink
+}
+var eventLoc;
+// API data turns into elements on the page
+function renderResults(eventData) {
+  console.log(eventData);
+
+// Check which radio is checked to return its value
+  var numEvents = $('input[name="search-count"]:checked').val();
+
+// Loop and render elements according to selection 
+  for (var i = 0; i < numEvents; i++) {
+    
+    console.log(eventData.results[i]);
+// Get exact number of events according to event count
+    var eventList = eventData.results[i];
+    
+// Track every event count
+    var eventCount = i + 1;
+    console.log(eventCount);
+
+// List group containing events 
+    var $eventList = $("<ul>");
+    $eventList.addClass("list-group");
+
+// Add element to DOM
+    $("#event-results").append($eventList);
+    
+    var eventTitle = eventList.title;
+    console.log(eventTitle);
+    
+    var eventCat = eventList.category;
+    console.log(eventCat);
+
+    var $eventListItem = $("<li class='list-group-item titleHeadline'>");
+    
+    // If title & categories are present, then append to $eventList
+    if (eventTitle && eventCat) {
+      $eventListItem.append(
+        `<span class='label label-primary'>${eventCount}. </span><strong>${eventTitle}</strong>`
+      );
     }
-    function showPosition(position) {
-        // Grab coordinates from the given object
-        var lat = position.coords.latitude;
-        var lon = position.coords.longitude;
-        // Stores your coordinates in the console
-        console.log("Your coordinates are Latitude: " + lat + " Longitude " + lon);
-        x.innerHTML = "Latitude: " + position.coords.latitude + "<br> Longitude: " + position.coords.longitude;
+    
+    var eventDate = eventList.start;
+    // Render Date
+    $eventListItem.append(
+      `<br><span class'label'>Date: </span><strong>${eventDate}</strong>`
+    );
+    // Render categories
+    $eventListItem.append(
+      `<br><span class'label'>Category: </span><strong>${eventCat}</strong>`
+    );
+
+    eventLoc = eventList.location;
+    console.log(eventLoc[0]);
+    console.log(eventLoc[1]);
+    // Render latitudes
+    $eventListItem.append(
+      `<br><span class'label'>Longitude: </span><strong>${eventLoc[0]}</strong>`
+    );
+    // Render longitudes
+    $eventListItem.append(
+      `<br><span class'label'>Latitude: </span><strong>${eventLoc[1]}</strong>`
+    );
+     
+    // button Get Directions
+    $eventListItem.append(
+      `<br><p><button class="directions"> Get Directions </button></p>`
+    );
+    // var eventDescription = eventList.description;
+    // console.log(eventDescription);
+
+    $eventList.append($eventListItem);
+  }
+}
+// Clear any rendered event results
+function clear() {
+  $("#event-results").empty();
+  $("#search-input").val('');
+}
+
+$("#search-button").on("click", function(event) {
+
+  event.preventDefault();
+
+  var queryURL = buildQueryURL();
+
+$.ajax({
+  url: queryURL,
+  method: "GET",
+  headers: {"Authorization": "Bearer Q0wsOeBlriMife0WbvdpKFrEwbDRTxISnqZTeQzu"}
+}).then(renderResults);
+});
+
+$("#clear-all").on("click", clear);
+    // Initialize and add the map
+    const INITIAL_LATLNG = { lat: 38.5816, lng: -121.4944 };
+    const INITIAL_OPTIONS = { zoom: 12, scaleControl: true, center: INITIAL_LATLNG };
+
+    const map = new google.maps.Map(document.getElementById('map'), INITIAL_OPTIONS);
+    const geocoder = new google.maps.Geocoder();
+    const directionsService = new google.maps.DirectionsService();
+    const directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsRenderer.setMap(map);
+
+    // 'callback' here is the function we pass to getUserLocation when we call it below:
+    // getUserLocation(() => {})
+    function getUserLocation(callback) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          // here we call the callback function with the latlng. What we pass to callback here becomes
+          // userLatlng below
+          callback({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        })
+      } else {
+        throw new Error("Couldn't get user location");
+      }
     }
+    
+    function getEventLocation(eventLoc,callback) {
+      if (eventLoc) {
+        
+          callback({
+            lat: eventLoc[1],
+            lng: eventLoc[0],
+          });
+        
+      } else {
+        throw new Error("Couldn't get event location");
+      }
+    }
+
+
+    function handleGetDirectionsClick(e) {
+      // This is making sure that the clicked element is a directions button.
+      if (e.target.className != 'directions') return;
+
+      // Get the user location
+      getUserLocation((userLatlng) => {
+        // Get the event location
+        getEventLocation(eventLoc, (eventLatlng) => {
+          
+          // Now that we have both latlngs in scope, do the routing
+          const route = {
+            origin: userLatlng,
+            destination: eventLatlng,
+            travelMode: 'DRIVING'
+          }
+
+          directionsService.route(route, (response, status) => {
+            if (status !== 'OK') {
+              window.alert('Directions request failed due to ' + status);
+              return;
+            } else {
+              directionsRenderer.setDirections(response); // Add route to the map
+              var directionsData = response.routes[0].legs[0]; // Get data about the mapped route
+              if (!directionsData) {
+                window.alert('Directions request failed');
+              } else {
+                document.getElementById('msg').innerHTML += " Driving distance is " + directionsData.distance.text + " (" + directionsData.duration.text + ").";
+              }
+            }
+          });
+          
+        });
+      })
+    }
+
+    // This happens when the page loads
+    (function() {
+      // Adding an event handler for any click in the #events div
+      document.getElementById('event-results').addEventListener('click', handleGetDirectionsClick);
+    }());
+    
     </script>
   </div>
 </div>
