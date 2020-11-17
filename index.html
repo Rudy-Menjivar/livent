@@ -11,61 +11,105 @@
     <link rel="stylesheet" type="text/css" href="assets/stylesheet.css">
     <title>Livent</title>
 </head>
-<body>
 
-<section class = "section">
-  <div class = "container">
-    <h1 class = "title">
-      Livent
-    </h1>
-    <p class = "subtitle">
-      Search for nearby events!
-    </p>
-    <div class="row">
-      <div class="col-sm-12">
-        <input id="search-input" type="text">
-        <button id="search-button">Search</button>
-        <button id="clear-all">Clear Results</button>
+<body>
+  <section class="hero is-primary is-medium">
+    <!-- Hero head: will stick at the top -->
+    <div class="hero-head">
+      <nav class="navbar">
+        <div class="container">
+          <div class="navbar-brand">
+            <span class="navbar-burger burger" data-target="navbarMenuHeroA">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </div>
+          <div id="navbarMenuHeroA" class="navbar-menu">
+            <div class="navbar-end">
+              <a class="navbar-item is-active">
+                Home
+              </a>
+              <a class="navbar-item" href="https://github.com/Rudy-Menjivar/livent">
+                Github
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  
+    <!-- Hero content: will be in the middle -->
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <h1 class="title">
+          Livent
+        </h1>
+        <h2 class="subtitle">
+          Your Live Entertainment Locator
+        </h2>
       </div>
     </div>
-    <div class="row">
-      <div class="col-sm-12">
-        <!-- Return the selected number of events with radio selection -->
-        <legend>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="search-count" value="3">
-          <label for="3" class="form-check-label">
-            3
-          </label>
-        </div>
+  </section>
 
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="search-count" value="5">
-          <label for="5" class="form-check-label">
-            5
-          </label>
+<div class="section">
+  <div class="container">
+    <p class="subtitle">
+      Search for events by city or subject matter!
+    </p>
+    <div class="field has-addons">
+      <div class="control">
+          <input class="input" id="search-input" type="text" placeholder="Find an event">
+      </div>
+      <div class="control">
+          <a class="button is-primary is-outlined" id="search-button">
+          Search
+          </a>
+      </div>
+      <div class="control">
+          <a class="button is-primary is-outlined" id="clear-all">
+          Clear
+          </a>
+      </div>
+  </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <!-- Return the selected number of events with radio selection -->
+          <div class="content">
+            <p class="subtitle"><strong>Number of Displayed Events</strong></p>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="search-count" value="3">
+                <label for="3" class="form-check-label">
+                  3
+                </label>
+              </div>
+
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="search-count" value="5">
+                <label for="5" class="form-check-label">
+                  5
+                </label>
+              </div>
+              
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="search-count" value="10" checked>
+                <label for="10" class="form-check-label">
+                  10
+                </label>
+              </div>
+          </div>
         </div>
-        
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="search-count" value="10" checked>
-          <label for="10" class="form-check-label">
-            10
-          </label>
-        </div>
-        (Events to display)
-        </legend>
-        <br>
-        <p id="errorMessage"></p>
-        <p id ="location"></p>
       </div>
     </div>
     
     <br>
     <div class="row">
       <div class="col-sm-12">
-        <div class="card" style="visibility: hidden">
+        <div class="card">
           <div class="card-header">
-            <strong>Top Events</strong>
+            <strong>Top events near you</strong>
           </div>
           <div class="card-body" id="event-results">
             <!-- Search results will appear here -->
@@ -73,13 +117,49 @@
         </div>
       </div>
     </div>
+
+    <br>
+    <!--This function creates a button that allows the browser to determine your exact position in latitude and longitude coordinates. Takes a few seconds to load. -->
+    <button onclick="getLocation()">Find Me!</button>
+    <p id ="location"></p>
+    <script>
+    var x = document.getElementById("location");
+    function getLocation() {
+        // Makes sure the browser supports this feature
+        if (navigator.geolocation) {
+        // Provide our showPosition() function to getCurrentPosition
+        navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+    function showPosition(position) {
+        // Grab coordinates from the given object
+        var lat = position.coords.latitude;
+        var lon = position.coords.longitude;
+        // Stores your coordinates in the console
+        console.log("Your coordinates are Latitude: " + lat + " Longitude " + lon);
+        x.innerHTML = "Latitude: " + position.coords.latitude + "<br> Longitude: " + position.coords.longitude;
+    }
+    </script>
   </div>
-</section>
+</div>
+
+<footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+      <a href="https://bulma.io">
+        <img src="https://bulma.io/images/made-with-bulma.png" alt="Made with Bulma" width="128" height="24">
+      </a>
+    </p>
+  </div>
+</footer>
 
 <!-- 
-  Implemented geo location on page load
+  Implement geo location checkbox
   User is prompted to input event name in search box and click search button
   Upon button click, publish table of search results
+  Limit table to 5 rows
   Search events will rend with rows of details such as 'event name', 'event type', 'date', 'location' and 'distance'
   Render save button on each row of results
   When user clicks Save button then save entire row of event details to local storage
