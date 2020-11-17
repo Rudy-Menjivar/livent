@@ -61,6 +61,7 @@
       <div class="control">
           <input class="input" id="search-input" type="text" placeholder="Find an event">
       </div>
+<<<<<<< HEAD
       <div class="control">
           <a class="button is-primary is-outlined" id="search-button">
           Search
@@ -85,6 +86,19 @@
                   3
                 </label>
               </div>
+=======
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <!-- Return the selected number of events with radio selection -->
+        <legend>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="search-count" value="3">
+          <label for="3" class="form-check-label">
+            3
+          </label>
+        </div>
+>>>>>>> master
 
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="search-count" value="5">
@@ -101,13 +115,21 @@
               </div>
           </div>
         </div>
+<<<<<<< HEAD
+=======
+        (Events to display)
+        </legend>
+        <br>
+        <p id="errorMessage"></p>
+        <p id ="location"></p>
+>>>>>>> master
       </div>
     </div>
     
     <br>
     <div class="row">
       <div class="col-sm-12">
-        <div class="card">
+        <div class="card" style="visibility: hidden">
           <div class="card-header">
             <strong>Top events near you</strong>
           </div>
@@ -117,6 +139,7 @@
         </div>
       </div>
     </div>
+<<<<<<< HEAD
   </div>
 </div>
 
@@ -126,9 +149,24 @@
         <img src="https://bulma.io/images/made-with-bulma.png" alt="Made with Bulma" width="128" height="24">
        </a>
     </p>
+=======
+>>>>>>> master
   </div>
 </footer>
 
+<<<<<<< HEAD
+=======
+<!-- 
+  Implemented geo location on page load
+  User is prompted to input event name in search box and click search button
+  Upon button click, publish table of search results
+  Search events will rend with rows of details such as 'event name', 'event type', 'date', 'location' and 'distance'
+  Render save button on each row of results
+  When user clicks Save button then save entire row of event details to local storage
+  Display row of event details from local storage onto page in a div
+  Map modal (not mvp)
+ -->
+>>>>>>> master
 <script src="assets/script.js"></script>
 </body>
 </html>
