@@ -1,6 +1,9 @@
 # Project 1: Livent Application
 
 ## Description
+
+![Demo](assets/Livent.gif)
+
 Livent is an application that allows a user to search for events when they enter specific criteria in the search bar. The event date, location, time and distance to the user will be provided for that particular event. It will also be displayed on a map using API's.
 
 ## User Story
