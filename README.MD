@@ -1,6 +1,9 @@
 # Project 1: Livent Application
 
 ## Description
+
+![Demo](assets/Livent.gif)
+
 Livent is an application that allows a user to search for events when they enter specific criteria in the search bar. The event date, location, time and distance to the user will be provided for that particular event. It will also be displayed on a map using API's.
 
 ## User Story
@@ -24,13 +27,12 @@ THEN I click a button that saves the event to a section in addition to saving it
 ## API's Used
 * [PredictHQ](https://www.predicthq.com/api)
 * [GoogleMaps](https://developers.google.com/maps/documentation)
-* [Geolocation](https://developers.google.com/maps/documentation/geolocation/overview)
 
-## Resources and Acknowledgements
-[add content here]
+## Technologies Used
+* [Geolocation](https://developers.google.com/maps/documentation/geolocation/overview)
+* [Bulma](https://bulma.io/)
+* HTML
+* Javascript
 
 ## Created By
-* Rudy 
-* Vijay
-* Alex
-* Steven
+Livent was created by team members from UC Davis's Part-Time Full Stack Coding Bootcamp: Rudy, Vijay, Alex and Steven.
