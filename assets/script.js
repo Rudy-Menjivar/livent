@@ -65,7 +65,7 @@ function renderResults(eventData) {
     );
     // Get Directions Button
     $eventListItem.append(
-      `<li><p><button class="directions"> Get Directions </button></p>`
+      `<li><button id="directions" class="button is-primary is-outlined"> Get Directions </button>`
     );
     // Render search data & make card appear
     $eventList.append($eventListItem);
@@ -146,7 +146,7 @@ $("#clear-all").on("click", clear);
 
     function handleGetDirectionsClick(e) {
       // This is making sure that the clicked element is a directions button.
-      if (e.target.className != 'directions') return;
+      if (e.target.id != 'directions') return;
 
       // Get the user location
       getUserLocation((userLatlng) => {
