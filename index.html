@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvNBKMdxsvuvkSePNK-29rINgqdJn739w"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
@@ -13,7 +14,7 @@
       /* Styling div element containing the map */
        #map {
        height: 300px;
-       width: 1450px;
+       width: 100%;
        }
    </style>
     <title>Livent</title>
@@ -60,76 +61,68 @@
   </section>
 
   <div id="map"></div>
-  <div id="msg"></div>
+  <div id="msg" class="has-text-centered"></div>
   <br>
 
-<div class="section">
-  <div class="container">
-    <p class="subtitle">
-      Search for events by city or subject matter!
-    </p>
-    <div class="field has-addons">
-      <div class="control">
-          <input class="input" id="search-input" type="text" placeholder="Find an event">
-      </div>
-      <div class="control">
-          <a class="button is-primary is-outlined" id="search-button">
-          Search
-          </a>
-      </div>
-      <div class="control">
-          <a class="button is-primary is-outlined" id="clear-all">
-          Clear
-          </a>
-      </div>
-  </div>
-
+  <div class="section">
     <div class="container">
+      <p class="subtitle">
+        Search for events by city or subject matter!
+      </p>
+      <div class="row">
+        <div class="col">
+          <div class="field has-addons">
+            <div class="control">
+              <input class="input" id="search-input" type="text" placeholder="Find an event">
+            </div>
+            <div class="control">
+              <a class="button is-primary is-outlined" id="search-button">
+              Search
+              </a>
+            </div>
+            <div class="control">
+              <a class="button is-primary is-outlined" id="clear-all">
+              Clear
+              </a>
+            </div>
+          </div>
+        </div>
+        <label>Events within: </label>
+        <div class="col">
+          <div class="field">
+            <div class="control">
+              <div class="select is-primary">
+                <select>
+                  <option disabled>Events Within:</option>
+                  <option name="distance-value" value="30mi">30 miles</option>
+                  <option name="distance-value" value="300mi" selected>300 miles</option>
+                  <option name="distance-value" value="3000mi">3,000 miles</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="errorMsg">
+      </div>
+      <br>
+      <br>
+
       <div class="row">
         <div class="col-sm-12">
-          <!-- Return the selected number of events with radio selection -->
-          <div class="content">
-            <p class="subtitle"><strong>Number of Displayed Events</strong></p>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="search-count" value="3">
-                <label for="3" class="form-check-label">
-                  3
-                </label>
-              </div>
-
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="search-count" value="5">
-                <label for="5" class="form-check-label">
-                  5
-                </label>
-              </div>
-              
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="search-count" value="10" checked>
-                <label for="10" class="form-check-label">
-                  10
-                </label>
-              </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <br>
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="card" style="visibility: hidden">
-          <div class="card-header">
-            <strong>Top events near you</strong>
-          </div>
-          <div class="card-body" id="event-results">
-            <!-- Search results will appear here -->
+          <div class="card" style="visibility: hidden">
+            <div class="card-header">
+              <strong>Top events near you</strong>
+            </div>
+            <div class="card-body" id="event-results">
+              <!-- Search results will appear here -->
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
 <footer class="footer">
   <div class="content has-text-centered">
@@ -141,8 +134,6 @@
   </div>
 </footer>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvNBKMdxsvuvkSePNK-29rINgqdJn739w"></script>
 <script src="assets/script.js"></script>
-<!-- <script scr="assets/script.js"></script> -->
 </body>
 </html>

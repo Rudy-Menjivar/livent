@@ -1,10 +1,12 @@
 // Pulls search input from the form to build queryURL for eventData
 function buildQueryURL() {
-  // Gets value from search input
+  // Gets value from search input & selected drop down
   var eventSearch = $("#search-input").val().trim();
+  var distanceValue = $('option[name="distance-value"]:selected').val();
   // PredictHQ event search
   var queryLink = "https://api.predicthq.com/v1/events/"
-  + "?within=300mi@38.7945892,-121.32270899999999"
+  + "?within=" + distanceValue
+  + "@38.7945892,-121.32270899999999"
   + "&start_around.origin=2020-11-17"
   + "&q=" + eventSearch
   + "&country=US&active.gte=2020-11-16"
@@ -13,101 +15,87 @@ function buildQueryURL() {
   $("#event-results").empty();
   return queryLink
 }
-var eventLoc;
+  var eventLoc;
 // API data turns into elements on the page
 function renderResults(eventData) {
   console.log(eventData);
-
-// Check which radio is checked to return its value
-  var numEvents = $('input[name="search-count"]:checked').val();
-
-// Loop and render elements according to selection 
-  for (var i = 0; i < numEvents; i++) {
-    
-    console.log(eventData.results[i]);
-// Get exact number of events according to event count
-    var eventList = eventData.results[i];
-    
-// Track every event count
-    var eventCount = i + 1;
-    console.log(eventCount);
-
+  console.log(eventData.count);
+// Loop and render elements & proceed if there are more than 1 count 
+  for (var i = 0; i < 10; i++) {
+  if (eventData.count === 0) {
+    $("#errorMsg").text("No events found");
+    $("#errorMsg").css("class", "text-center")
+    } else {
+  var eventList = eventData.results[i];
+  console.log(eventData.results[i]);
 // List group containing events 
-    var $eventList = $("<ul>");
-    $eventList.addClass("list-group");
-
+  var $eventList = $("<ul>");
+  $eventList.addClass("list-group");
 // Add element to DOM
-    $("#event-results").append($eventList);
+  $("#event-results").append($eventList);
 // Get title, start date, category, pass location, description & add button 
-    var eventTitle = eventList.title;
-    var eventDate = eventList.start; 
-    var eventCat = eventList.category;
-    var eventDescription = eventList.description;
-    eventLoc = eventList.location;
-    var $eventListItem = $("<li class='list-group-item eventInfo'>");
-    
-    // If title & categories are present, then append to $eventList
-    if (eventTitle && eventCat) {
-      $eventListItem.append(
-      `<span class='label label-primary'></span><strong>${eventTitle}</strong>`
-      );
-    }
-    // Render Date
-    $eventListItem.append(
-      `<li><span class'label'><strong>Date: </strong></span>${eventDate}`
+  var eventTitle = eventList.title;
+  var eventDate = eventList.start; 
+  var eventCat = eventList.category;
+  var eventDescription = eventList.description;
+  eventLoc = eventList.location;
+  var $eventListItem = $("<li class='list-group-item eventInfo'>");
+  // Render title, date, category, description, directions button onto card
+  $eventListItem.append(
+  `<span class='label label-primary'></span><strong>${eventTitle}</strong>`
     );
-    // Render categories
-    $eventListItem.append(
-      `<li><span class'label'><strong>Category: </strong></span>${eventCat}`
-    );
-    $eventListItem.append(
-      `<li><span class'label'><strong>Description: </strong></span>${eventDescription}`
-    );
-    // Get Directions Button
-    $eventListItem.append(
-      `<li><button id="directions" class="button is-primary is-outlined"> Get Directions </button>`
-    );
-    // Render search data & make card appear
-    $eventList.append($eventListItem);
-    $(".card").css("visibility", "visible");
-  }
-}
+  $eventListItem.append(
+    `<li><span class'label'><strong>Date: </strong></span>${eventDate}`
+  );
+  $eventListItem.append(
+    `<li><span class'label'><strong>Category: </strong></span>${eventCat}`
+  );
+  $eventListItem.append(
+    `<li><span class'label'><strong>Description: </strong></span>${eventDescription}`
+  );
+  $eventListItem.append(
+    `<li><button id="directions" class="button is-primary is-outlined"> Get Directions </button>`
+  );
+  $eventList.append($eventListItem);
+  $(".card").css("visibility", "visible");
+  }}
+};
 // Clear any rendered event results
 function clear() {
   $("#event-results").empty();
   $("#search-input").val('');
   $("#msg").empty();
+  $("#errorMsg").empty();
   $(".card").css("visibility", "hidden");
 }
-
 function beginSearch() {
   var eventSearch = $("#search-input").val().trim();
-  // If search input isn't empty
+// If search input isn't empty
   if (eventSearch !== "") {
     buildIt();
     $("#msg").empty();
+    $("#errorMsg").empty();
   } else {
-    $("#msg").text("There's nothing to search!");
+    $("#errorMsg").text("Nothing entered");
     }
 }
 // buildIt function runs if beginSearch function is true
 function buildIt() {
   var queryURL = buildQueryURL();
 
-$.ajax({
-  url: queryURL,
-  method: "GET",
-  headers: {"Authorization": "Bearer Q0wsOeBlriMife0WbvdpKFrEwbDRTxISnqZTeQzu"}
-}).then(renderResults);
+  $.ajax({
+    url: queryURL,
+    method: "GET",
+    headers: {"Authorization": "Bearer Q0wsOeBlriMife0WbvdpKFrEwbDRTxISnqZTeQzu"}
+  }).then(renderResults);
 };
 
 // Initiate these functions with button clicks
-$("#search-button").on("click", beginSearch)
+$("#search-button").on("click", beginSearch);
 $("#clear-all").on("click", clear);
     // Initialize and add the map
     const INITIAL_LATLNG = { lat: 38.5816, lng: -121.4944 };
     const INITIAL_OPTIONS = { zoom: 12, scaleControl: true, center: INITIAL_LATLNG };
-
     const map = new google.maps.Map(document.getElementById('map'), INITIAL_OPTIONS);
     const geocoder = new google.maps.Geocoder();
     const directionsService = new google.maps.DirectionsService();
@@ -130,15 +118,15 @@ $("#clear-all").on("click", clear);
         throw new Error("Couldn't get user location");
       }
     }
-    
+
     function getEventLocation(eventLoc,callback) {
       if (eventLoc) {
-        
+
           callback({
             lat: eventLoc[1],
             lng: eventLoc[0],
           });
-        
+
       } else {
         throw new Error("Couldn't get event location");
       }
@@ -152,7 +140,7 @@ $("#clear-all").on("click", clear);
       getUserLocation((userLatlng) => {
         // Get the event location
         getEventLocation(eventLoc, (eventLatlng) => {
-          
+
           // Now that we have both latlngs in scope, do the routing
           const route = {
             origin: userLatlng,
