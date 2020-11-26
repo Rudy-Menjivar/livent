@@ -1,80 +1,60 @@
-// Pulls search input from the form to build queryURL for eventData
-function buildQueryURL() {
-  // Gets value from search input & selected drop down
-  var eventSearch = $("#search-input").val().trim();
-  var distanceValue = $('option[name="distance-value"]:selected').val();
-  // PredictHQ event search
-  var queryLink = "https://api.predicthq.com/v1/events/"
-  + "?within=" + distanceValue
-  + "@38.7945892,-121.32270899999999"
-  + "&start_around.origin=2020-11-17"
-  + "&q=" + eventSearch
-  + "&country=US&active.gte=2020-11-16"
-  console.log(queryLink);
-  // Clear any previous event-results 
-  $("#event-results").empty();
-  return queryLink
-}
-  var eventLoc;
-// API data turns into elements on the page
-function renderResults(eventData) {
-  console.log(eventData);
-  console.log(eventData.count);
-// Loop and render elements & proceed if there are more than 1 count 
-  for (var i = 0; i < 10; i++) {
-  if (eventData.count === 0) {
-    $("#errorMsg").text("No events found");
-    $("#errorMsg").css("class", "text-center")
-    } else {
-  var eventList = eventData.results[i];
-  console.log(eventData.results[i]);
-// List group containing events 
-  var $eventList = $("<ul>");
-  $eventList.addClass("list-group");
-// Add element to DOM
-  $("#event-results").append($eventList);
-// Get title, start date, category, pass location, description & add button 
-  var eventTitle = eventList.title;
-  var eventDate = eventList.start; 
-  var eventCat = eventList.category;
-  var eventDescription = eventList.description;
-  eventLoc = eventList.location;
+var eventLoc;
+
+initLastSearch();
+// Render last search results on load
+function initLastSearch() {
+  var lastSearch = JSON.parse(window.localStorage.getItem("lastSearch"));
+  // console.log(lastSearch) // returns 10 arrays
+  if (!lastSearch) {
+    return;
+  } else {
+  for (var i = 0; i < lastSearch.length; i++) {
+  var $ulEl = $("<ul>");   // List group containing events 
+  $ulEl.addClass("list-group");
   var $eventListItem = $("<li class='list-group-item eventInfo'>");
-  // Render title, date, category, description, directions button onto card
-  $eventListItem.append(
-  `<span class='label label-primary'></span><strong>${eventTitle}</strong>`
+  $("#event-results").append($ulEl);
+  
+  var eventList = lastSearch[i];
+  // console.log(JSON.parse(window.localStorage.getItem("lastSearch"))); / 10 arrays+ length
+  var searchResults = {
+    eventTitle: eventList.eventTitle,
+    eventDate: eventList.eventDate,
+    eventCat: eventList.eventCat,
+    eventDescription: eventList.eventDescription,
+    eventLoc: eventList.eventLoc
+  }
+  eventLoc = eventList.eventLoc
+  // Create elements with bootstrap card list styling
+    var $eventListItem = $("<li class='list-group-item eventInfo'>");
+    // Render title, date, category, description, directions button onto card
+    $eventListItem.append(
+    `<span class='label label-primary'></span><strong>${searchResults.eventTitle}</strong>`
+      );
+    $eventListItem.append(
+      `<li><span class'label'><strong>Date: </strong></span>${searchResults.eventDate}`
     );
-  $eventListItem.append(
-    `<li><span class'label'><strong>Date: </strong></span>${eventDate}`
-  );
-  $eventListItem.append(
-    `<li><span class'label'><strong>Category: </strong></span>${eventCat}`
-  );
-  $eventListItem.append(
-    `<li><span class'label'><strong>Description: </strong></span>${eventDescription}`
-  );
-  $eventListItem.append(
-    `<li><button id="directions" class="button is-primary is-outlined"> Get Directions </button>`
-  );
-  $eventList.append($eventListItem);
-  $(".card").css("visibility", "visible");
+    $eventListItem.append(
+      `<li><span class'label'><strong>Category: </strong></span>${searchResults.eventCat}`
+    );
+    $eventListItem.append(
+      `<li><span class'label'><strong>Description: </strong></span>${searchResults.eventDescription}`
+    );
+    $eventListItem.append(
+      `<li><button id="directions" class="button is-primary is-outlined"> Get Directions </button>`
+    );
+    $ulEl.append($eventListItem);
+    $(".card").css("visibility", "visible");
   }}
 };
-// Clear any rendered event results
-function clear() {
-  $("#event-results").empty();
-  $("#search-input").val('');
-  $("#msg").empty();
-  $("#errorMsg").empty();
-  $(".card").css("visibility", "hidden");
-}
 function beginSearch() {
   var eventSearch = $("#search-input").val().trim();
 // If search input isn't empty
   if (eventSearch !== "") {
     buildIt();
+    clearLastSearch();
     $("#msg").empty();
     $("#errorMsg").empty();
+    $("#search-input").val('');
   } else {
     $("#errorMsg").text("Nothing entered");
     }
@@ -89,7 +69,76 @@ function buildIt() {
     headers: {"Authorization": "Bearer Q0wsOeBlriMife0WbvdpKFrEwbDRTxISnqZTeQzu"}
   }).then(renderResults);
 };
-
+  // Gets value from search input & selected distance drop down
+function buildQueryURL() {
+  var eventSearch = $("#search-input").val().trim();
+  var distanceValue = $('option[name="distance-value"]:selected').val();
+  var queryLink = "https://api.predicthq.com/v1/events/"
+  + "?within=" + distanceValue
+  + "@38.7945892,-121.32270899999999"
+  + "&start_around.origin=2020-11-17"
+  + "&q=" + eventSearch
+  + "&country=US&active.gte=2020-11-16"
+  $("#event-results").empty(); // Clear any previous event-results 
+  return queryLink
+}
+// API data turns into elements on the page
+function renderResults(eventData) {
+// Loop and render elements & proceed if there are more than zero 
+  for (var i = 0; i < eventData.results.length; i++) {
+  if (eventData.count === 0) {
+    $("#errorMsg").text("No events found");
+    $("#errorMsg").css("class", "text-center")
+    } else {
+  var eventList = eventData.results[i];
+  var $ulEl = $("<ul>");
+  $ulEl.addClass("list-group");
+  $("#event-results").append($ulEl); // Append elements to DOM
+  // Array for each event's: title, start date, category, description & loc
+  var searchResults = {
+    eventTitle: eventList.title,
+    eventDate: eventList.start,
+    eventCat: eventList.category,
+    eventDescription: eventList.description,
+    eventLoc: eventList.location
+  }
+  eventLoc = eventList.location
+  var $eventListItem = $("<li class='list-group-item eventInfo'>");
+  // Render title, date, category, description, directions button onto card
+  $eventListItem.append(
+  `<span class='label label-primary'></span><strong>${searchResults.eventTitle}</strong>`
+    );
+  $eventListItem.append(
+    `<li><span class'label'><strong>Date: </strong></span>${searchResults.eventDate}`
+  );
+  $eventListItem.append(
+    `<li><span class'label'><strong>Category: </strong></span>${searchResults.eventCat}`
+  );
+  $eventListItem.append(
+    `<li><span class'label'><strong>Description: </strong></span>${searchResults.eventDescription}`
+  );
+  $eventListItem.append(
+    `<li><button id="directions" class="button is-primary is-outlined"> Get Directions </button>`
+  );
+  $ulEl.append($eventListItem);
+  $(".card").css("visibility", "visible");
+  var lastSearch = JSON.parse(window.localStorage.getItem("lastSearch")) || [];
+  lastSearch.push(searchResults)
+  window.localStorage.setItem("lastSearch", JSON.stringify(lastSearch));
+  }}
+}; // Clear last search key (last search data)
+function clearLastSearch() {
+  window.localStorage.removeItem("lastSearch");
+}
+// Clear any rendered event results
+function clear() {
+  $("#event-results").empty();
+  $("#search-input").val('');
+  $("#msg").empty();
+  $("#errorMsg").empty();
+  $(".card").css("visibility", "hidden");
+  clearLastSearch();
+}
 // Initiate these functions with button clicks
 $("#search-button").on("click", beginSearch);
 $("#clear-all").on("click", clear);
@@ -158,6 +207,7 @@ $("#clear-all").on("click", clear);
               if (!directionsData) {
                 window.alert('Directions request failed');
               } else {
+                $("#msg").empty();
                 document.getElementById('msg').innerHTML += " Driving distance is " + directionsData.distance.text + " (" + directionsData.duration.text + ").";
               }
             }
