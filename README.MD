@@ -6,7 +6,7 @@ Livent is an application that allows anyone to search for events by any criteria
 Only relevant event information will populate for each event found.  Directions will also be displayed using Google Maps API.
 
 ## Preview
-<img src="assets/livent.png" width="50%" height="50%" alt="Hazy image of concert performers & crowd with hands in the air">
+<img src="assets/livent.gif" width="50%" height="50%" alt="Hazy image of concert performers & crowd with hands in the air">
 
 ## User Story
 As an event-seeker, who likes to plan for events accordingly, they expect:
@@ -34,7 +34,7 @@ Each event's details are displayed in a card list group
 
 ## Project Links
 * [GitHub Repository](https://github.com/Rudy-Menjivar/livent)
-* [GitHub Pages](https://rudy-menjivar.github.io/livent/)
+* [Deployed Site](https://rudy-menjivar.github.io/livent/)
 
 ## API's Used
 * [PredictHQ](https://www.predicthq.com/api)
@@ -47,6 +47,7 @@ Each event's details are displayed in a card list group
 * [HTML](https://developer.mozilla.org/en-US/docs/Glossary/HTML)
 * [Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 * [CSS](https://developer.mozilla.org/en-US/docs/Glossary/CSS)
+* [GIF Maker](https://ezgif.com/)
 
 ## Created By
 Livent was created by team members from UC Davis's Part-Time Full Stack Coding Bootcamp: Rudy, Vijay, Alex and Steven.
