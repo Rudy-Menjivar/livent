@@ -1,15 +1,18 @@
 # Livent Application
 
 ## Description
+
 Livent is an application that allows anyone to search for events by any criteria. A search button will kick off the search and render details.
 
-Only relevant event information will populate for each event found.  Directions will also be displayed using Google Maps API.
+Only relevant event information will populate for each event found.  Directions will also be displayed using Google Maps API. This source code is available to everyone under the standard [MIT license](https://github.com/Rudy-Menjivar/livent/blob/master/LICENSE.txt).
 
 ## Preview
+
 <img src="assets/livent.gif" width="50%" height="50%" alt="Hazy image of concert performers & crowd with hands in the air">
 
 ## User Story
-As an event-seeker, who likes to plan for events accordingly, they expect:
+
+As an event-seeker, who likes to plan for events accordingly expect:
 - Events presented must be based on the search critera
 - Events populated should also be the closest events
 - Directions and distance should also populate with a click
@@ -33,14 +36,17 @@ Each event's details are displayed in a card list group
 - Distance and driving time are also relayed
 
 ## Project Links
+
 * [GitHub Repository](https://github.com/Rudy-Menjivar/livent)
 * [Deployed Site](https://rudy-menjivar.github.io/livent/)
 
 ## API's Used
+
 * [PredictHQ](https://www.predicthq.com/api)
 * [GoogleMaps](https://developers.google.com/maps/documentation)
 
 ## Technologies Used
+
 * [Geolocation](https://developers.google.com/maps/documentation/geolocation/overview)
 * [Bulma](https://bulma.io/)
 * [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API)
@@ -50,4 +56,11 @@ Each event's details are displayed in a card list group
 * [GIF Maker](https://ezgif.com/)
 
 ## Created By
+
 Livent was created by team members from UC Davis's Part-Time Full Stack Coding Bootcamp: Rudy, Vijay, Alex and Steven.
+
+## License
+
+Copyright (c) Rudy Menjivar. All rights reserved.
+
+Licensed under the [MIT](LICENSE.txt) license.
